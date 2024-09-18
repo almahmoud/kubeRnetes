@@ -55,10 +55,10 @@ create_wrapper_function <- function(api, operations, op_name) {
 #' @export
 initialize_api_with_wrappers <- function(url, config = NULL, type = NULL) {
   api <- rapiclient::get_api(url, config, type)
-  operations <- rapiclient::get_operations(api, config)
+  operations <- rapiclient::get_operations(api, .headers = config$headers)
   wrappers <- generate_api_wrappers(api, operations)
   
-  return(list(api = api, wrappers = wrappers))
+  return(list(api = api, operations = operations, wrappers = wrappers))
 }
 
 
