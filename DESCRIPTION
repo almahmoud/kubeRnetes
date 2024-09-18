@@ -1,0 +1,14 @@
+Package: kubeRnetes
+Title: Kubernetes API Client Library for R
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alexandru", "Mahmoud", , "almahmoudresearch@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3779-492X"))
+Description: Allows interaction with the Kubernetes API, to perform operations on a Kubernetes cluster from within R.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    rapiclient,
+    roxygen2
