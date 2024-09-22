@@ -26,22 +26,55 @@ generate_api_wrappers <- function(api, operations) {
 #' @return A wrapper function for the specified operation
 create_wrapper_function <- function(api, operations, op_name) {
   op <- operations[[op_name]]
-  
+  op_formals <- formals(op)
+
   wrapper <- function(...) {
+    args <- list(...)
+    named_args <- as.list(match.call())[-1]
+    all_args <- modifyList(named_args, args)
+
     tryCatch({
-      result <- op(...)
+      result <- do.call(op, all_args)
       return(httr::content(result))
     }, error = function(e) {
       stop(paste("Error in", op_name, ":", conditionMessage(e)))
     })
   }
+
+  # Set function parameters explicitly and include ...
+  formals(wrapper) <- c(op_formals, alist(... = ))
   
-  # Set function name and add basic documentation
-  formals(wrapper) <- alist(...=)
+  # Add attributes
   attr(wrapper, "name") <- op_name
   attr(wrapper, "description") <- paste("Wrapper for the", op_name, "API operation")
   
   return(wrapper)
+}
+
+# Add Namespace Functions
+create_namespace <- function(wrappers, dryRun = NULL, fieldManager = NULL, apiVersion = NULL, kind = NULL, metadata = NULL, spec = NULL, status = NULL) {
+  # Call the create namespace function from the k8s object
+  wrappers$createCoreV1Namespace(dryRun = dryRun, fieldManager = fieldManager, apiVersion = apiVersion, kind = kind, metadata = metadata, spec = spec, status = status)
+}
+
+update_namespace <- function(wrappers, name, dryRun = NULL, fieldManager = NULL, apiVersion = NULL, kind = NULL, metadata = NULL, spec = NULL, status = NULL) {
+  # Call the update namespace function from the k8s object
+  wrappers$replaceCoreV1Namespace(name = name, dryRun = dryRun, fieldManager = fieldManager, apiVersion = apiVersion, kind = kind, metadata = metadata, spec = spec, status = status)
+}
+
+delete_namespace <- function(wrappers, name, dryRun = NULL, gracePeriodSeconds = NULL, orphanDependents = NULL, propagationPolicy = NULL, apiVersion = NULL, preconditions = NULL) {
+  # Call the delete namespace function from the k8s object
+  wrappers$deleteCoreV1Namespace(name = name, dryRun = dryRun, gracePeriodSeconds = gracePeriodSeconds, orphanDependents = orphanDependents, propagationPolicy = propagationPolicy, apiVersion = apiVersion, preconditions = preconditions)
+}
+
+patch_namespace <- function(wrappers, name, dryRun = NULL, fieldManager = NULL, force = NULL, patchData) {
+  # Call the patch namespace function from the k8s object
+  wrappers$patchCoreV1Namespace(name = name, dryRun = dryRun, fieldManager = fieldManager, force = force, patchData = patchData)
+}
+
+get_namespace <- function(wrappers, name, pretty = NULL) {
+  # Call the get namespace function from the k8s object
+  wrappers$readCoreV1Namespace(name = name, pretty = pretty)
 }
 
 #' Initialize API and Generate Operations Wrapper
@@ -57,8 +90,17 @@ initialize_api <- function(url, config = NULL, type = NULL) {
   api <- rapiclient::get_api(url, config, type)
   operations <- rapiclient::get_operations(api, .headers = config$headers)
   wrappers <- generate_api_wrappers(api, operations)
-  
-  return(list(api = api, operations = operations, wrappers = wrappers))
+
+  # Add namespace functions to the api object
+  namespaces <- list(
+    create_namespace = function(dryRun = NULL, fieldManager = NULL, apiVersion = NULL, kind = NULL, metadata = NULL, spec = NULL, status = NULL) create_namespace(wrappers, dryRun, fieldManager, apiVersion, kind, metadata, spec, status),
+    update_namespace = function(name, dryRun = NULL, fieldManager = NULL, apiVersion = NULL, kind = NULL, metadata = NULL, spec = NULL, status = NULL) update_namespace(wrappers, name, dryRun, fieldManager, apiVersion, kind, metadata, spec, status),
+    delete_namespace = function(name, dryRun = NULL, gracePeriodSeconds = NULL, orphanDependents = NULL, propagationPolicy = NULL, apiVersion = NULL, preconditions = NULL) delete_namespace(wrappers, name, dryRun, gracePeriodSeconds, orphanDependents, propagationPolicy, apiVersion, preconditions),
+    patch_namespace = function(name, dryRun = NULL, fieldManager = NULL, force = NULL, patchData) patch_namespace(wrappers, name, dryRun, fieldManager, force, patchData),
+    get_namespace = function(name, pretty = NULL) get_namespace(wrappers, name, pretty)
+  )
+
+  return(list(api = api, operations = operations, wrappers = wrappers, namespaces = namespaces))
 }
 
 #' List Available API Operations
