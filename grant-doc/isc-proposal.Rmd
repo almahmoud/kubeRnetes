@@ -148,13 +148,33 @@ The project will be considered complete when:
 
 ## 5.2 Measuring Success
 
-We will track the following metrics to assess the project's impact and adoption:
+We will track the following metrics to assess the project's robustness, reliability, and impact:
 
-1. Number of GitHub stars, forks, and active contributors
-2. Number of CRAN downloads and package dependencies
-3. Community contributions, engagement, and issue resolution rate
-4. Adoption in academic papers and/or industry projects
-5. Integration with other R packages in the bioinformatics and cloud computing domains
+1. Code Quality and Reliability:
+   - Comprehensive test coverage
+   - Continuous integration builds and tests across platforms
+   - Regular passing of R CMD check, CRAN checks, and Bioc checks
+   - Low number of reported bugs and quick resolution times
+
+2. Maintainability:
+   - Community contributions and engagement to foster bug reporting and community-driven development
+   - Up-to-date documentation and vignettes
+
+3. Compatibility:
+   - Verified functionality across different R versions and operating systems
+   - Verified functionality across different Kubernetes versions and flavors/providers
+
+4. Long-term Stability:
+   - Maintained backward compatibility for reproducibility of existing workflows
+   - Maintained compatibility with future Kubernetes versions and API changes
+
+5. Community and Adoption:
+   - Number of GitHub stars, forks, and active contributors
+   - Number of CRAN downloads
+   - Integration with other R packages in the bioinformatics and cloud computing domains
+   - Adoption in academic papers and/or industry projects
+
+By prioritizing these metrics, we aim to create a robust, reliable, and well-maintained library that can serve as a long-term solution for R programmers looking to work with cloud computing resources.
 
 ## 5.3 Future Work
 
