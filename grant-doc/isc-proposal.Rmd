@@ -20,9 +20,8 @@ Other attempts to address this problem have been limited in scope, often relying
 Tackling this problem is crucial for several reasons:
 
 - It will empower R users to harness the full potential of container orchestration and cloud computing.
-- It will bridge the gap between statistical computing and modern DevOps practices.
 - It will enable more efficient and scalable computational workflows in fields such as bioinformatics, where R is widely used.
-- It will foster greater collaboration between data scientists and infrastructure teams, bringing the possibility for the former to leverage infrastructure in their R code.
+- It will bridge the gap between statistical computing and modern DevOps practices, and foster greater collaboration between data scientists and infrastructure teams.
 
 
 # The proposal
