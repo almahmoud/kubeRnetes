@@ -11,18 +11,19 @@ The R programming language has become a cornerstone in data science, statistical
 
 1.1. **Limited accessibility**: R users, particularly in academic and research settings, struggle to leverage the power of Kubernetes for scaling their computational workflows. This limitation hinders the potential for large-scale data analysis and high-performance computing in R-based research projects.
 
-1.2. **Dependency on external tools**: Current solutions require R users to rely on external command-line interface (CLI) tools or wrappers. This dependency introduces complexity and potential compatibility issues, significantly impacting both reproducibility (crucial for scientific users) and portability (essential for industry and general users).
+1.2. **Dependency on external tools**: Current solutions require R users to rely on external command-line interface (CLI) tools. This dependency introduces complexity and potential compatibility issues, significantly impacting both reproducibility (crucial for scientific users) and portability (essential for industry and general users).
 
 1.3. **Steep learning curve and resource underutilization**: The absence of a native R client for Kubernetes creates a substantial barrier to adoption. R users must learn additional technologies and paradigms to work with Kubernetes, which hinders the seamless integration of containerized applications within R-based data analysis pipelines. Consequently, many R users are unable to fully leverage cloud-based Kubernetes clusters for distributed computing, limiting the scale and efficiency of their analyses.
 
-Previous attempts to address this problem have been limited in scope, often relying on CLI tools and providing narrow functionalities for specific cloud providers. These solutions have generally gone unmaintained for several years and failed to offer a comprehensive, R-native approach to Kubernetes interaction. Notably, no R package could be found on CRAN or GitHub allowing users to universally interact with a Kubernetes cluster.
+Previous attempts to address this problem have been limited in scope, often relying on CLI tools and providing narrow functionalities for specific cloud providers. These have gone unmaintained for several years and failed to offer a comprehensive, R-native approach to Kubernetes interaction. Notably, no R package could be found on CRAN or GitHub allowing users to universally interact with a Kubernetes cluster.
 
 Addressing this problem is crucial for several reasons:
 
-a) It will empower R users to harness the full potential of container orchestration and cloud computing, enabling more efficient and scalable computational workflows.
-b) It will significantly enhance the capabilities of R in fields such as bioinformatics, where large-scale data processing and analysis are increasingly common.
-c) It will bridge the gap between statistical computing and modern DevOps practices, fostering greater collaboration between data scientists and infrastructure teams.
-d) It will improve the reproducibility and portability of R-based research and data analysis projects, a critical factor in scientific advancement and industrial applications.
+a) It will empower R users to harness the full potential of container orchestration and cloud computing, enabling more efficient and scalable computational workflows. This will allow researchers and data scientists to tackle larger and more complex problems in R.
+b) It will enhance R's capabilities in fields requiring high-performance computing, such as bioinformatics, by enabling R users to process and analyze large-scale datasets more effectively, keeping pace with the growing data demands in many fields.
+c) It will democratize access to advanced computing resources, allowing smaller research groups and individual data scientists to leverage enterprise-grade infrastructure without the need for extensive DevOps expertise.
+d) It will bridge the gap between statistical computing and modern DevOps practices, fostering greater collaboration between data scientists and infrastructure teams. This integration will lead to more robust, scalable, and maintainable data science pipelines.
+
 
 # 2. The Proposal
 
@@ -32,40 +33,40 @@ We propose the development of a comprehensive, native R client library for Kuber
 
 1. A dynamic API wrapper that adapts to any active Kubernetes cluster, including support for Custom Resource Definitions (CRDs). This flexibility ensures that the library can work with various Kubernetes distributions and custom extensions.
 
-2. Bespoke services for core Kubernetes resources, offering an intuitive and R-idiomatic way to manage common objects such as Namespaces, Pods, Services, and Deployments. These high-level functions will simplify common tasks for R users unfamiliar with Kubernetes internals.
+2. Bespoke services for core Kubernetes resources, offering an intuitive and R-idiomatic way to manage common objects such as Pods, Namespaces, Services, Deployments, etc. These high-level functions will simplify common tasks for R users unfamiliar with Kubernetes internals and detailed object structures.
 
 3. Comprehensive documentation and tutorials to facilitate adoption by the R community, including examples of real-world use cases in scientific computing and data analysis.
 
-This project has received endorsement from Bioconductor, with Core team members committed to providing feedback and guidance throughout the development process. This endorsement ensures that the library will be developed in alignment with Bioconductor's high standards and will seamlessly integrate with the broader Bioconductor ecosystem in the future.
+This project has received endorsement from Bioconductor, with Core team members willing to provide feedback and guidance in the development process. Bioconductor's involvement ensures that the library will be developed in alignment with Bioconductor's high standards and will seamlessly integrate with the broader Bioconductor ecosystem in the future.
 
 The proposed R Kubernetes client library will significantly benefit the R community by:
 
-- Enabling R users to easily deploy and manage containerized applications and workflows, enhancing the scalability of R-based projects.
-- Providing a native, dependency-free solution for Kubernetes interaction, improving reproducibility and portability of R analyses.
-- Facilitating the use of cloud resources for computationally intensive tasks in R, opening new possibilities for big data analysis and high-performance computing.
-- Streamlining the development of scalable, reproducible research environments, particularly beneficial for large-scale bioinformatics projects.
-- Fostering collaboration between R developers and DevOps teams, bridging the gap between statistical computing and modern infrastructure management.
+- Improving reproducibility and portability of R analyses through a native, dependency-free solution for Kubernetes interaction. This will R users to easily deploy and manage containerized applications and workflows, enhancing the scalability of R-based projects. This will allow researchers and data scientists to tackle larger and more complex problems efficiently.
+- Facilitating "in-place" computing for big data analysis and high-performance computing tasks. Users can launch containers directly within cloud environments where their datasets reside, avoiding egress fees associated with transferring large volumes of data out of storage. This approach significantly reduces costs and improves performance for data-intensive computations.
+- Fostering collaboration between R developers and DevOps teams by bridging the gap between statistical computing and modern infrastructure management. This integration will lead to more robust, scalable, and maintainable data science pipelines in both academic and industry settings.
+- Democratizing access to advanced computing resources, allowing smaller research groups and individual data scientists to leverage enterprise-grade infrastructure without extensive DevOps expertise. This will level the playing field in computational research across various disciplines.
+
 
 ## 2.2 Detailed Architecture
 
 Our proposed R-based Kubernetes client library will be built on the following architecture:
 
 1. **Dynamic API Wrapper**: 
-   - A dynamically generated set of R functions that map directly to the Kubernetes API endpoints. 
+   - A dynamically generated set of R functions that map directly to the existing Kubernetes API endpoints. 
    - This component will utilize the `rapiclient` package to interact with the Kubernetes API server. 
    - The dynamic wrapper will provide expert users full access to all API functions, wrapping the server's schema (including API extensions added to the cluster via Custom Resource Definitions).
    - This approach ensures flexibility and future-proofing against Kubernetes API changes.
 
 2. **Resource-Specific Functions**: 
    - A layer of R functions providing intuitive, high-level interactions with common Kubernetes resources. 
-   - These functions will be implemented based on the core Kubernetes API schema, enabling general users easy access to basic CRUD operations on core resources.
+   - These functions will be implemented for resources in the core Kubernetes API schema, enabling general users easy access to basic CRUD operations on core resources.
    - Examples include: `create_namespace(name="my-ns")`, `delete_job(name='my-job', namespace='my-ns')`, `apply_pod(name='my-job', namespace='my-ns', spec=newjobspec)`.
    - This abstraction layer will significantly lower the barrier to entry for R users new to Kubernetes.
 
 3. **Authentication and Configuration**: 
    - Utilities for managing Kubernetes authentication and cluster configuration within R sessions. 
-   - Initial implementation will focus on basic kubeconfig management.
-   - Future versions may include more advanced authentication methods and multi-cluster management capabilities.
+   - Initial implementation will focus on basic kubeconfig authentication.
+   - Multi-cluster management capabilities and other features will be later added.
 
 The Minimum Viable Product (MVP) will include:
 
@@ -81,8 +82,8 @@ The Minimum Viable Product (MVP) will include:
 
 The project will require:
 
-1. One lead developer with extensive experience in both R package development and Kubernetes (part-time for 18 months)
-2. Advisory input from Kubernetes experts and the Bioconductor Core team
+1. One lead developer with experience in both Kubernetes and R package development (part-time for 18 months)
+2. Advisory input from other members of the Bioconductor Core team
 3. Potential internships for additional development support and community outreach
 
 ## 3.2 Processes
@@ -120,7 +121,7 @@ This project will also receive material support from the Bioconductor Project, i
 
 ## 3.5 Summary
 
-The requested funding will support a dedicated part-time developer to create, test, and document a native R client for Kubernetes over 18 months. This developer will be aided by potential interns focusing on software engineering and community outreach. The investment, coupled with guidance from the Bioconductor Core team and material support, will result in a powerful tool bridging the gap between R and modern container orchestration, benefiting a wide range of R users in academia, research, and industry.
+The requested funding will support a dedicated part-time developer to create, test, and document a native R client for Kubernetes over 18 months. This developer will be aided by potential interns focusing on software engineering and community outreach. The investment, coupled with guidance from the Bioconductor Core team and existing testing environments, will result in a powerful tool bridging the gap between R and modern container orchestration, benefiting a wide range of R users in academia, research, and industry.
 
 # 4. Signatories
 
@@ -130,7 +131,8 @@ The requested funding will support a dedicated part-time developer to create, te
 
 ## 4.2 Contributors
 
-- Marcel Ramos - Bioconductor Core Team Member & rapiclient package maintainer
+- Vincent Carey - Bioconductor Core team lead & package reviewer
+- Marcel Ramos - Bioconductor Core team member & rapiclient package maintainer
 
 # 5. Success Metrics and Future Work
 
@@ -158,10 +160,10 @@ We will track the following metrics to assess the project's impact and adoption:
 
 Potential extensions and future work include:
 
-1. Integration with BiocParallel for distributed computing on Kubernetes clusters (with potential funding available via Bioconductor NIH grant)
+1. Integration with BiocParallel for distributed computing on Kubernetes clusters
 2. Integration with other R parallelization frameworks to enhance high-performance computing capabilities
-3. Development of high-level workflow templates for common bioinformatics tasks
-4. Creation of Shiny-based GUI for Kubernetes cluster management, lowering the barrier for non-technical users
+3. Integration with high-level workflow tutorials for common bioinformatics tasks
+4. Creation of Shiny-based GUI for Kubernetes cluster management, easing the visualization and monitoring of resources
 5. Extended support for specialized Kubernetes operators relevant to scientific computing and data analysis
 
 ## 5.4 Key Risks and Mitigation Strategies
@@ -171,23 +173,23 @@ Potential extensions and future work include:
 2. Potential low initial adoption due to the specialized nature of the tool
    - Mitigation: Develop comprehensive documentation, tutorials, and showcase real-world use cases; engage with R and Kubernetes communities through conferences and workshops
 3. Challenges in maintaining compatibility across various Kubernetes distributions
-   - Mitigation: Implement a robust testing strategy covering major Kubernetes distributions and versions
+   - Mitigation: Adopt a dynamic API wrapper design to accommodate minor changes and custom extensions, and implement a robust testing strategy covering major Kubernetes distributions and versions, and 
 
 # 6. Project Plan
 
 ## 6.1 Start-up Phase (Months 1-3)
 
-1. (Completed) Set up GitHub repository with license, code of conduct, contribution guidelines, and proof-of-concept code
-2. Announce the project on relevant R and Kubernetes forums, and invite community feedback and contributions
-3. Finalize detailed technical specifications with community input
-4. Establish regular communication channels with Bioconductor Core team for ongoing guidance
+1. (Completed) Set up GitHub repository with license and proof-of-concept code
+2. Set up code of conduct, contribution guidelines, and CI/CD pipeline
+3. Announce the project on relevant R and Kubernetes forums, and invite community feedback and contributions
+4. Finalize detailed technical specifications and roadmap with community input
 
 ## 6.2 Technical Delivery
 
 - Months 4-6: Develop core API wrapper and resource-specific functions, implementing identity management from kubeconfig
-- Months 7-9: Implement a variety of authentication methods for clusters (e.g., direct auth with cloud providers)
+- Months 7-9: Implement a variety of authentication methods for clusters, expand resource-specific functions, and begin integration testing
 - Months 10-12: Finalize first version, implement comprehensive testing suite, and begin documentation process
 - Months 13-15: Complete documentation and tutorials, conduct community testing and feedback collection
 - Months 16-18: Address community feedback, prepare for CRAN submission, and initiate the process for inclusion in the Kubernetes client libraries list
 
-Throughout the development process, we will maintain open communication with the R and Kubernetes communities, regularly soliciting feedback and contributions to ensure the library meets the needs of its intended users.
+Throughout the development process, we will maintain open communication with the R and Kubernetes communities, regularly soliciting feedback and contributions to ensure the library meets the needs of its intended users. Alignment with Bioconductor guidelines will ensure best practices are followed in the devleopment of both the R code and documentation.
